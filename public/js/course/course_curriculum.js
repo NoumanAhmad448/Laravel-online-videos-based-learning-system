@@ -81,97 +81,125 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 19);
+/******/ 	return __webpack_require__(__webpack_require__.s = 20);
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ "./resources/js/course/show-course.js":
-/*!********************************************!*\
-  !*** ./resources/js/course/show-course.js ***!
-  \********************************************/
+/***/ "./resources/js/course/course_curriculum.js":
+/*!**************************************************!*\
+  !*** ./resources/js/course/course_curriculum.js ***!
+  \**************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
 $(function () {
-  $('.rating').each(function (index) {
-    if (index < rating) {
-      $(this).addClass('text-warning');
-    } else {
-      $(this).removeClass('text-warning');
+  $('#add_sec, .add_material').tooltip();
+  $('body').addClass('min-vh-100 d-flex flex-column');
+  $('.footer').addClass('mt-auto');
+  $(".sec-container").on("change", ".is_free", function () {
+    url = $(this).attr("url");
+    media_id = $(this).attr("media_id");
+    set_free = $("#is_free_".concat(media_id)).is(":checked") ? 1 : 0;
+    body_part = {
+      set_free: set_free
+    };
+    body_part['set_download'] = $("#is_download_".concat(media_id)).is(":checked") ? 1 : 0;
+    body = body_part;
+
+    if (debug) {
+      console.log(body);
     }
-  }); // var video = $("#vid01")
-  // console.log(video)
-  // var file = new Blob(
-  //     {"type" : "video\/mp4"});
-  // var value = URL.createObjectURL(file);
-  // video.src = value
-  // video.load()
-  // console.log(url)
-  // var xhr = new XMLHttpRequest();
-  // xhr.open('GET', video.attr("url"));
-  // xhr.responseType = 'blob';
-  // xhr.onload = function(e){
-  //     var blob = new Blob(([xhr.response]))
-  //     var url = URL.createObjectURL(blob)
-  //     video.attr('src',url)
-  // };
-  // xhr.send()
+
+    $.ajax({
+      url: url,
+      type: "post",
+      data: body,
+      headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+      },
+      dataType: 'json'
+    }).done(function (e) {
+      show_popup("Requested operation has been performed");
+      $("#close-modal").removeAttr("onclick");
+    }).fail(function () {
+      console.error(err);
+    });
+  });
 });
-$(".show_popup").click(function () {
-  video_source = $("#video-source");
 
-  if (video_source.length) {
-    video_source.attr("src", $(this).attr("url")); // show loader
+function cancel(event) {
+  var current_elem = $(event.target);
+  var prev_val = current_elem.attr('prev_val');
+  var parent_form = $(current_elem.parents('form'));
 
-    $('.loading-section').addClass('loader').fadeIn();
-    $('#loading').fadeIn();
-    setTimeout(function () {
-      // hide loader
-      $('#loading', '.loading-section').fadeOut();
-      $('.loading-section').removeClass('loader').fadeOut();
-      $("#show-video").modal({
-        keyboard: true,
-        focus: true,
-        show: true
-      });
-    }, 3000);
+  if (parent_form !== 'undefined') {
+    parent_form.replaceWith("<div class=\"sec_title ml-md-2\">\n           ".concat(prev_val, "\n            <span class=\"sec_title_edit ml-2\" >\n                <i class=\"las la-pen\"></i>\n            </span>\n    </div>"));
+  } else {
+    console.error('could not find form element');
   }
-});
+}
+
+function cancel_title(event) {
+  var current_elem = $(event.target);
+  var parent_form = $(current_elem.parents('form'));
+
+  if (parent_form !== 'undefined') {
+    parent_form.replaceWith("<div class=\"btn website add_title\">\n            <i class=\"las la-plus\"></i>\n            Add Title\n        </div>");
+  } else {
+    console.error('could not find form element');
+  }
+}
+
+function reduceTextLen(input_txt) {
+  var limit = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 50;
+
+  if (input_txt.length > limit) {
+    return input_txt.substr(0, limit) + "...";
+  }
+
+  return input_txt;
+}
+
 $(function () {
-  $('#share_course').click(function () {
-    var url = $(this).attr('link');
+  $("body").on("change", "#set_all_video", function () {
+    url = $(this).attr("url");
+    set_free = $(this).is(":checked") ? 1 : 0;
+    body_part = {
+      set_free: set_free
+    };
+    body = body_part;
 
-    if (url) {
-      $('#show_link').text(url);
-      $('#course_share_modal').modal('show');
+    if (debug) {
+      console.log(body);
     }
-  });
-  $('#copy_url').click(function () {
-    document.execCommand("copy");
-    navigator.clipboard.writeText($('#show_link').text().trim()); // $('#temp_field').remove();
 
-    $('#show_msg').text('copied!');
-    setTimeout(function () {
-      $('#show_msg').text('');
-    }, 10000);
-  });
-  $('#show_time').text($('#total_time').val());
-  $('#show-video').on('hidden.bs.modal', function (e) {
-    $("#video-source").attr("src", "");
+    $.ajax({
+      url: url,
+      type: "post",
+      data: body,
+      headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+      },
+      dataType: 'json'
+    }).done(function (e) {
+      show_popup("Requested operation has been performed");
+    }).fail(function () {
+      console.error(err);
+    });
   });
 });
 
 /***/ }),
 
-/***/ 19:
-/*!**************************************************!*\
-  !*** multi ./resources/js/course/show-course.js ***!
-  \**************************************************/
+/***/ 20:
+/*!********************************************************!*\
+  !*** multi ./resources/js/course/course_curriculum.js ***!
+  \********************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! B:\lyskills\resources\js\course\show-course.js */"./resources/js/course/show-course.js");
+module.exports = __webpack_require__(/*! B:\lyskills\resources\js\course\course_curriculum.js */"./resources/js/course/course_curriculum.js");
 
 
 /***/ })
